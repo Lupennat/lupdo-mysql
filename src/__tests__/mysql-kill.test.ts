@@ -1,11 +1,11 @@
 import { Pdo, PdoError } from 'lupdo';
-import { tests } from './fixtures/config';
+import { pdoData } from './fixtures/config';
 
 describe('Mysql Kill', () => {
     // sometimes sql sleep to simulate long query doesn't work -_-
     jest.retryTimes(3);
 
-    it.each(tests)('Works $connection Destroy Connection Does not kill connection', async ({ driver, options }) => {
+    it('Works Destroy Connection Does not kill connection', async () => {
         const events: {
             killed: {
                 [key: string]: number;
@@ -14,7 +14,7 @@ describe('Mysql Kill', () => {
             killed: {}
         };
 
-        const pdo = new Pdo(driver, options, {
+        const pdo = new Pdo(pdoData.driver, pdoData.config, {
             killTimeoutMillis: 500,
             killResource: true,
             max: 1,

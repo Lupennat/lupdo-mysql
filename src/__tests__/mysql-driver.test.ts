@@ -5,96 +5,92 @@ import {
     Pdo,
     PdoConnectionI,
     PdoError,
-    PdoI,
     PdoPreparedStatement,
     PdoStatement,
     PdoTransaction
 } from 'lupdo';
 
 import { Connection, RowDataPacket } from 'mysql2/promise';
-import { tests } from './fixtures/config';
+import { pdoData } from './fixtures/config';
 const { PromiseConnection } = require('mysql2/promise');
 
 describe('Mysql Driver', () => {
-    const pdos: { [key: string]: PdoI } = {};
-    beforeAll(() => {
-        for (const test of tests) {
-            pdos[test.connection] = new Pdo(test.driver, test.options);
-        }
-    });
+    const pdo = new Pdo(pdoData.driver, pdoData.config);
 
     afterAll(async () => {
-        for (const connection in pdos) {
-            await pdos[connection].disconnect();
-        }
+        await pdo.disconnect();
+    });
+
+    afterEach(() => {
+        Pdo.setLogger(() => {});
     });
 
     it('Works Driver Registration', () => {
         expect(Pdo.getAvailableDrivers()).toEqual(['mysql', 'mariadb']);
     });
 
-    it.each(tests)('Works $connection BeginTransaction Return Transaction', async ({ connection }) => {
-        const trx = await pdos[connection].beginTransaction();
+    it('Works $connection BeginTransaction Return Transaction', async () => {
+        const trx = await pdo.beginTransaction();
         expect(trx).toBeInstanceOf(PdoTransaction);
         await trx.rollback();
     });
 
-    it.each(tests)('Works $connection Exec Return Number', async ({ connection }) => {
-        const res = await pdos[connection].exec('SELECT 1');
+    it('Works $connection Exec Return Number', async () => {
+        const res = await pdo.exec('SELECT 1');
         expect(typeof res === 'number').toBeTruthy();
         expect(res).toEqual(0);
-        const trx = await pdos[connection].beginTransaction();
+        const trx = await pdo.beginTransaction();
         expect(await trx.exec("INSERT INTO users (name, gender) VALUES ('Claudio', 'All');")).toEqual(1);
         await trx.rollback();
     });
 
-    it.each(tests)('Works $connection Exec Fails', async ({ connection }) => {
-        await expect(pdos[connection].exec('SELECT ?')).rejects.toThrow(PdoError);
+    it('Works $connection Exec Fails', async () => {
+        await expect(pdo.exec('SELECT ?')).rejects.toThrow(PdoError);
     });
 
-    it.each(tests)('Works $connection Query Return PdoStatement', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT 1');
+    it('Works $connection Query Return PdoStatement', async () => {
+        const stmt = await pdo.query('SELECT 1');
         expect(stmt).toBeInstanceOf(PdoStatement);
     });
 
-    it.each(tests)('Works $connection Query Fails', async ({ connection }) => {
-        await expect(pdos[connection].query('SELECT ?')).rejects.toThrow(PdoError);
+    it('Works $connection Query Fails', async () => {
+        await expect(pdo.query('SELECT ?')).rejects.toThrow(PdoError);
     });
 
-    it.each(tests)('Works $connection Prepare Return PdoPreparedStatement', async ({ connection }) => {
-        const stmt = await pdos[connection].prepare('SELECT 1');
+    it('Works $connection Prepare Return PdoPreparedStatement', async () => {
+        const stmt = await pdo.prepare('SELECT 1');
         expect(stmt).toBeInstanceOf(PdoPreparedStatement);
         await stmt.execute();
         await stmt.close();
     });
 
-    it.each(tests)('Works $connection Prepare Fails', async ({ connection }) => {
-        await expect(pdos[connection].prepare('SELECT ??')).rejects.toThrow(PdoError);
+    it('Works $connection Prepare Fails', async () => {
+        await expect(pdo.prepare('SELECT ??')).rejects.toThrow(PdoError);
     });
 
-    it.each(tests)('Works $connection Execute Fails', async ({ connection }) => {
-        const stmt = await pdos[connection].prepare('SELECT ? as spaccati');
+    it('Works $connection Execute Fails', async () => {
+        const stmt = await pdo.prepare('SELECT ? as spaccati');
         await expect(stmt.execute([])).rejects.toThrow(PdoError);
         await stmt.close();
     });
 
-    it.each(tests)('Works $connection Get Raw Pool Connection', async ({ connection }) => {
-        const raw = await pdos[connection].getRawPoolConnection();
+    it('Works $connection Get Raw Pool Connection', async () => {
+        const raw = await pdo.getRawPoolConnection();
         expect(raw.connection).toBeInstanceOf(PromiseConnection);
         await raw.release();
     });
 
-    it.each(tests)('Works $connection Get Raw Driver Connection', async ({ connection }) => {
-        const conn = await pdos[connection].getRawDriverConnection<Connection>();
+    it('Works $connection Get Raw Driver Connection', async () => {
+        const conn = await pdo.getRawDriverConnection<Connection>();
         const res = await conn.query('SELECT * FROM users WHERE id = 1');
         expect((res as RowDataPacket[])[0][0]).toEqual({ id: 1, name: 'Edmund', gender: 'Multigender' });
         await conn.end();
     });
 
-    it.each(tests)('Works $connection Connection On Create', async ({ driver, options }) => {
+    it('Works $connection Connection On Create', async () => {
         const pdo = new Pdo(
-            driver,
-            options,
+            pdoData.driver,
+            pdoData.config,
             {
                 created: async (uuid: string, connection: PdoConnectionI) => {
                     await connection.query('SET SESSION wait_timeout=28000');
@@ -108,10 +104,10 @@ describe('Mysql Driver', () => {
         await pdo.disconnect();
     });
 
-    it.each(tests)('Works $connection Debug', async ({ driver, options }) => {
+    it('Works $connection Debug', async () => {
         console.log = jest.fn();
         console.trace = jest.fn();
-        const pdo = new Pdo(driver, options, {}, { [ATTR_DEBUG]: DEBUG_ENABLED });
+        const pdo = new Pdo(pdoData.driver, pdoData.config, {}, { [ATTR_DEBUG]: DEBUG_ENABLED });
         await pdo.query('SELECT 1');
         expect(console.log).toHaveBeenCalled();
         await pdo.disconnect();
