@@ -11,6 +11,7 @@ import {
     PdoTransaction
 } from 'lupdo';
 
+import { Connection, RowDataPacket } from 'mysql2/promise';
 import { tests } from './fixtures/config';
 const { PromiseConnection } = require('mysql2/promise');
 
@@ -81,6 +82,13 @@ describe('Mysql Driver', () => {
         const raw = await pdos[connection].getRawPoolConnection();
         expect(raw.connection).toBeInstanceOf(PromiseConnection);
         await raw.release();
+    });
+
+    it.each(tests)('Works $connection Get Raw Driver Connection', async ({ connection }) => {
+        const conn = await pdos[connection].getRawDriverConnection<Connection>();
+        const res = await conn.query('SELECT * FROM users WHERE id = 1');
+        expect((res as RowDataPacket[])[0][0]).toEqual({ id: 1, name: 'Edmund', gender: 'Multigender' });
+        await conn.end();
     });
 
     it.each(tests)('Works $connection Connection On Create', async ({ driver, options }) => {
