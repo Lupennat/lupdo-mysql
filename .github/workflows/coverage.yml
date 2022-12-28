@@ -26,7 +26,7 @@ jobs:
       - name: Start Database(s)
         run: |
             docker-compose \
-              --file "scripts/docker-compose.yml" \
+              --file "docker-compose.yml" \
               up \
                 --detach \
                 --build \
@@ -38,7 +38,7 @@ jobs:
       - name: Initialize Database
         run: |
             docker-compose \
-              --file "scripts/docker-compose.yml" \
+              --file "docker-compose.yml" \
               up \
                 "wait${{ matrix.database-type }}"
 
@@ -70,5 +70,5 @@ jobs:
       - name: Stop Database(s)
         run: |
           docker-compose \
-            --file "scripts/docker-compose.yml" \
+            --file "docker-compose.yml" \
             down
