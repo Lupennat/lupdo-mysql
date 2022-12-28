@@ -26,8 +26,7 @@ export const drivers: {
     }
 };
 
-// @ts-expect-error global jest
-const currentDB: string = __DB__;
+const currentDB: string = process.env.DB as string;
 
 export const pdoData: { driver: string; config: MysqlOptions } = {
     driver: currentDB === 'mariadb' ? 'mariadb' : 'mysql',

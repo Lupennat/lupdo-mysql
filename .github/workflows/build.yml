@@ -1,49 +1,17 @@
 name: Build and Test
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  mysql56:
-    runs-on: ubuntu-latest
-    name: MySQL 5.6
-    services:
-      mysql:
-        image: 'mysql:5.6'
-        command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
-        ports:
-            - '5306:3306'
-        environment:
-            MYSQL_DATABASE: 'test_db'
-            MYSQL_ROOT_PASSWORD: "root"
-            MYSQL_USER: "lupdo"
-            MYSQL_PASSWORD: "lupdo@s3cRet"
-        healthcheck:
-            test:
-                [
-                    'CMD',
-                    '/usr/bin/mysql',
-                    '-hlocalhost',
-                    '-ulupdo',
-                    '-plupdo@s3cRet',
-                    '-e',
-                    'SELECT 1'
-                ]
-            interval: 30s
-            timeout: 5s
-            retries: 3
-        restart: always
-        volumes:
-            - ./src/__tests__/data/mysql.sql:/data/application/mysql.sql
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+    matrix:
+      node-version: [14.x, 16.x, 18.x]
+      database-type: [mysql56, mysql8, mariadb]
 
     steps:
       - uses: actions/checkout@v3
@@ -53,112 +21,35 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: npm install, build, and test
+      - name: Start Database(s)
         run: |
-          npm install
+          docker-compose \
+            --file "scripts/docker-compose.yml" \
+            up \
+              --detach \
+              --build \
+              "${{ matrix.database-type }}"
+
+      - name: Run npm install
+        run: npm install
+
+      - name: Initialize Database
+        run: |
+          docker-compose \
+            --file "scripts/docker-compose.yml" \
+            up \
+              "wait${{ matrix.database-type }}"
+
+      - name: Build and test
+        run: |
           npm run build
-          npm run test:mysql56
+          npm run test:db
         env:
           CI: true
+          DB: ${{ matrix.database-type }}
 
-  mysql8:
-    runs-on: ubuntu-latest
-    name: MySQL 8
-    services:
-      mysql:
-        image: 'mysql:8'
-        command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
-        ports:
-          - '5307:3306'
-        environment:
-            MYSQL_DATABASE: 'test_db'
-            MYSQL_ROOT_PASSWORD: "root"
-            MYSQL_USER: "lupdo"
-            MYSQL_PASSWORD: "lupdo@s3cRet"
-        healthcheck:
-            test:
-                [
-                    'CMD',
-                    '/usr/bin/mysql',
-                    '-hlocalhost',
-                    '-ulupdo',
-                    '-plupdo@s3cRet',
-                    '-e',
-                    'SELECT 1'
-                ]
-            interval: 30s
-            timeout: 5s
-            retries: 3
-        restart: always
-        volumes:
-            - ./src/__tests__/data/mysql.sql:/data/application/mysql.sql
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: npm install, build, and test
+      - name: Stop Database(s)
         run: |
-          npm install
-          npm run build
-          npm run test:mysql8
-        env:
-          CI: true
-  
-  mariadb:
-    runs-on: ubuntu-latest
-    name: MariaDB 10
-    services:
-      mysql:
-        image: 'mariadb:10'
-        command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
-        ports:
-          - '5308:3306'
-        environment:
-            MYSQL_DATABASE: 'test_db'
-            MYSQL_ROOT_PASSWORD: "root"
-            MYSQL_USER: "lupdo"
-            MYSQL_PASSWORD: "lupdo@s3cRet"
-        healthcheck:
-            test:
-                [
-                    'CMD',
-                    '/usr/bin/mysql',
-                    '-hlocalhost',
-                    '-ulupdo',
-                    '-plupdo@s3cRet',
-                    '-e',
-                    'SELECT 1'
-                ]
-            interval: 30s
-            timeout: 5s
-            retries: 3
-        restart: always
-        volumes:
-            - ./src/__tests__/data/mysql.sql:/data/application/mysql.sql
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build
-          npm run test:mariadb
-        env:
-          CI: true
+          docker-compose \
+            --file "scripts/docker-compose.yml" \
+            down     
