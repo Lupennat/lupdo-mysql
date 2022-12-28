@@ -10,6 +10,13 @@ export const drivers: {
         password: 'lupdo@s3cRet',
         database: 'test_db'
     },
+    mysql57: {
+        host: 'localhost',
+        port: 5309,
+        user: 'lupdo',
+        password: 'lupdo@s3cRet',
+        database: 'test_db'
+    },
     mysql8: {
         host: 'localhost',
         port: 5307,

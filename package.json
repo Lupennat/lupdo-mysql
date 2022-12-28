@@ -1,6 +1,6 @@
 {
     "name": "lupdo-mysql",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Mysql Driver For Lupdo",
     "author": "Claudio Pennati <claudio.pennati@gmail.com>",
     "license": "MIT",
@@ -39,13 +39,14 @@
         "build:types": "tsc -p ./typescript/tsconfig.types.json",
         "clean": "rimraf ./dist",
         "test:mysql56": "npm run lint && cross-env DB=mysql56 jest --config test/jest.config.js",
+        "test:mysql57": "npm run lint && cross-env DB=mysql57 jest --config test/jest.config.js",
         "test:mysql8": "npm run lint && cross-env DB=mysql8 jest --config test/jest.config.js",
         "test:mariadb": "npm run lint && cross-env DB=mariadb jest --config test/jest.config.js",
         "test:coverage": "npm run lint && jest --config test/jest.config.js --coverage",
         "test:db": "npm run lint && jest --config test/jest.config.js",
         "lint": "eslint --ext \".js,.jsx,.ts,.tsx\" \"./src\"",
         "lint:fix": "eslint --fix --ext \".js,.jsx,.ts,.tsx\" \"./src\"",
-        "db:up": "docker compose -f docker-compose.yml up --build -d mysql56 mysql8 mariadb && docker-compose -f docker-compose.yml up waitmysql56 waitmysql8 waitmariadb",
+        "db:up": "docker compose -f docker-compose.yml up --build -d mysql56 mysql57 mysql8 mariadb && docker-compose -f docker-compose.yml up waitmysql56 waitmysql57 waitmysql8 waitmariadb",
         "db:down": "docker compose -f docker-compose.yml down -v"
     },
     "engines": {
