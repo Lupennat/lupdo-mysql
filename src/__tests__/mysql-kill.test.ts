@@ -3,7 +3,7 @@ import { pdoData } from './fixtures/config';
 
 describe('Mysql Kill', () => {
     // sometimes sql sleep to simulate long query doesn't work -_-
-    jest.retryTimes(3);
+    jest.retryTimes(6);
 
     it('Works Destroy Connection Does not kill connection', async () => {
         const events: {
