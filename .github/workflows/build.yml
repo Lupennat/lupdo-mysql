@@ -8,22 +8,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         node-version: [14.x, 16.x, 18.x]
         database-type: [mysql56, mysql8, mariadb]
 
-      steps:
-        - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-        - name: Use Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v3
-          with:
-            node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-        - name: Start Database(s)
-          run: |
+      - name: Start Database(s)
+        run: |
             docker-compose \
               --file "scripts/docker-compose.yml" \
               up \
@@ -31,26 +32,26 @@ jobs:
                 --build \
                 "${{ matrix.database-type }}"
 
-        - name: Run npm install
-          run: npm install
+      - name: Run npm install
+        run: npm install
 
-        - name: Initialize Database
-          run: |
+      - name: Initialize Database
+        run: |
             docker-compose \
               --file "scripts/docker-compose.yml" \
               up \
                 "wait${{ matrix.database-type }}"
 
-        - name: Build and test
-          run: |
-            npm run build
-            npm run test:db
-          env:
-            CI: true
-            DB: ${{ matrix.database-type }}
+      - name: Build and test
+        run: |
+          npm run build
+          npm run test:db
+        env:
+          CI: true
+          DB: ${{ matrix.database-type }}
 
-        - name: Stop Database(s)
-          run: |
-            docker-compose \
-              --file "scripts/docker-compose.yml" \
-              down
+      - name: Stop Database(s)
+        run: |
+          docker-compose \
+            --file "scripts/docker-compose.yml" \
+            down
