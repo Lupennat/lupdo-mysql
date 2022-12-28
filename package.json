@@ -42,7 +42,7 @@
         "test:mysql57": "npm run lint && cross-env DB=mysql57 jest --config test/jest.config.js",
         "test:mysql8": "npm run lint && cross-env DB=mysql8 jest --config test/jest.config.js",
         "test:mariadb": "npm run lint && cross-env DB=mariadb jest --config test/jest.config.js",
-        "test:local": "npm run test:mysql56 && npm run test:mysql57 && npm run test:mysql8 && npm run test:mariadb",
+        "test:local": "npm run db:up && npm run test:mysql56 && npm run test:mysql57 && npm run test:mysql8 && npm run test:mariadb && npm run db:down",
         "test:coverage": "npm run lint && jest --config test/jest.config.js --coverage",
         "test:db": "npm run lint && jest --config test/jest.config.js",
         "lint": "eslint --ext \".js,.jsx,.ts,.tsx\" \"./src\"",
