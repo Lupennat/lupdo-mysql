@@ -39,12 +39,12 @@ describe('Mysql Statement', () => {
         const trx = await pdo.beginTransaction();
         let stmt = await trx.query('SELECT * FROM users limit 5;');
 
-        expect(stmt.lastInsertId()).toBe(null);
+        expect(await stmt.lastInsertId()).toBe(null);
         stmt = await trx.query('SELECT count(*) as total from users');
         const lastId = stmt.fetchColumn<number>(0).get() as number;
 
         stmt = await trx.query("INSERT INTO users (name, gender) VALUES ('Claudio', 'All');");
-        expect(stmt.lastInsertId()).toBeGreaterThan(lastId);
+        expect(await stmt.lastInsertId()).toBeGreaterThan(lastId);
         await trx.rollback();
     });
 
