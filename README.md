@@ -1,3 +1,11 @@
+<p align="center">
+	<a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank"><img src="https://img.shields.io/npm/v/lupdo-mysql?color=0476bc&label=" alt="NPM version"></a>
+	<a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/lupdo-mysql?color=3890aa&label="></a>
+    <a href="https://codecov.io/github/Lupennat/lupdo-mysql" >
+        <img src="https://codecov.io/github/Lupennat/lupdo-mysql/branch/main/graph/badge.svg?token=IOOU3AW039"/>
+    </a>
+</p>
+
 # Lupdo-mysql
 
 [Lupdo](https://www.npmjs.com/package/lupdo) Driver For Mysql.
@@ -52,7 +60,7 @@ run();
 
 ## Mysql2 Overrides
 
-By default Ludpo-mysql overrides user connection options with theese:
+By default Ludpo-mysql overrides user connection options with this:
 
 ```ts
 {
