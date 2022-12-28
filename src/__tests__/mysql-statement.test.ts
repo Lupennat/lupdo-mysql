@@ -1,49 +1,42 @@
-import { ATTR_CASE, ATTR_FETCH_DIRECTION, CASE_LOWER, CASE_NATURAL, FETCH_BACKWARD, Pdo, PdoI } from 'lupdo';
-import { tests } from './fixtures/config';
+import { ATTR_CASE, ATTR_FETCH_DIRECTION, CASE_LOWER, CASE_NATURAL, FETCH_BACKWARD, Pdo } from 'lupdo';
+import { pdoData } from './fixtures/config';
 
 describe('Mysql Statement', () => {
-    const pdos: { [key: string]: PdoI } = {};
-    beforeAll(() => {
-        for (const test of tests) {
-            pdos[test.connection] = new Pdo(test.driver, test.options);
-        }
-    });
+    const pdo = new Pdo(pdoData.driver, pdoData.config);
 
     afterAll(async () => {
-        for (const connection in pdos) {
-            await pdos[connection].disconnect();
-        }
+        await pdo.disconnect();
     });
 
-    it.each(tests)('Works $connection Statement Debug', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT * FROM users limit 5;');
+    it('Works Statement Debug', async () => {
+        const stmt = await pdo.query('SELECT * FROM users limit 5;');
         expect(stmt.debug()).toBe('SQL: SELECT * FROM users limit 5;\nPARAMS:[]');
     });
 
-    it.each(tests)('Works $connection Statement Get Attribute is Localized', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT * FROM users limit 5;');
+    it('Works Statement Get Attribute is Localized', async () => {
+        const stmt = await pdo.query('SELECT * FROM users limit 5;');
         const stmtFetchMode = stmt.getAttribute(ATTR_CASE);
-        expect(pdos[connection].getAttribute(ATTR_CASE)).toBe(stmtFetchMode);
-        pdos[connection].setAttribute(ATTR_CASE, CASE_LOWER);
-        expect(pdos[connection].getAttribute(ATTR_CASE)).toBe(CASE_LOWER);
+        expect(pdo.getAttribute(ATTR_CASE)).toBe(stmtFetchMode);
+        pdo.setAttribute(ATTR_CASE, CASE_LOWER);
+        expect(pdo.getAttribute(ATTR_CASE)).toBe(CASE_LOWER);
         expect(stmt.getAttribute(ATTR_CASE)).toBe(stmtFetchMode);
-        pdos[connection].setAttribute(ATTR_CASE, CASE_NATURAL);
+        pdo.setAttribute(ATTR_CASE, CASE_NATURAL);
     });
 
-    it.each(tests)('Works $connection Statement Set Attribute is Localized', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT * FROM users limit 5;');
-        const pdoFetchMode = pdos[connection].getAttribute(ATTR_CASE);
+    it('Works Statement Set Attribute is Localized', async () => {
+        const stmt = await pdo.query('SELECT * FROM users limit 5;');
+        const pdoFetchMode = pdo.getAttribute(ATTR_CASE);
         expect(stmt.getAttribute(ATTR_CASE)).toBe(pdoFetchMode);
         const res = stmt.setAttribute(ATTR_CASE, CASE_LOWER);
         expect(res).toBeTruthy();
         expect(stmt.getAttribute(ATTR_CASE)).toBe(CASE_LOWER);
-        expect(pdos[connection].getAttribute(ATTR_CASE)).toBe(pdoFetchMode);
+        expect(pdo.getAttribute(ATTR_CASE)).toBe(pdoFetchMode);
         expect(stmt.setAttribute('NOT_EXISTS', 1)).toBeFalsy();
-        pdos[connection].setAttribute(ATTR_CASE, CASE_NATURAL);
+        pdo.setAttribute(ATTR_CASE, CASE_NATURAL);
     });
 
-    it.each(tests)('Works $connection Statement Last Insert Id', async ({ connection }) => {
-        const trx = await pdos[connection].beginTransaction();
+    it('Works Statement Last Insert Id', async () => {
+        const trx = await pdo.beginTransaction();
         let stmt = await trx.query('SELECT * FROM users limit 5;');
 
         expect(stmt.lastInsertId()).toBe(null);
@@ -55,8 +48,8 @@ describe('Mysql Statement', () => {
         await trx.rollback();
     });
 
-    it.each(tests)('Works $connection Statement Row Count', async ({ connection }) => {
-        const trx = await pdos[connection].beginTransaction();
+    it('Works Statement Row Count', async () => {
+        const trx = await pdo.beginTransaction();
         let stmt = await trx.query('SELECT * FROM users limit 5;');
         expect(stmt.rowCount()).toBe(0);
         stmt = await trx.query("INSERT INTO users (name, gender) VALUES ('Claudio', 'All');");
@@ -64,20 +57,20 @@ describe('Mysql Statement', () => {
         await trx.rollback();
     });
 
-    it.each(tests)('Works $connection Column Count', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT * FROM users limit 5;');
+    it('Works Column Count', async () => {
+        const stmt = await pdo.query('SELECT * FROM users limit 5;');
         expect(stmt.columnCount()).toBe(3);
     });
 
-    it.each(tests)('Works $connection Get Column Meta', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT * FROM users limit 5;');
+    it('Works Get Column Meta', async () => {
+        const stmt = await pdo.query('SELECT * FROM users limit 5;');
         expect(stmt.getColumnMeta(0)?.name).toBe('id');
         expect(stmt.getColumnMeta(1)?.name).toBe('name');
         expect(stmt.getColumnMeta(5)).toBeNull();
     });
 
-    it.each(tests)('Works $connection Reset Cursor', async ({ connection }) => {
-        const stmt = await pdos[connection].query('SELECT * FROM users limit 5;');
+    it('Works Reset Cursor', async () => {
+        const stmt = await pdo.query('SELECT * FROM users limit 5;');
         const fetch = stmt.fetchArray();
         expect(fetch.get()).toEqual([1, 'Edmund', 'Multigender']);
         fetch.all();
