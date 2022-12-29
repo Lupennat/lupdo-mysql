@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x, 16.x, 18.x]
-        database-type: [mysql56, mysql57, mysql8, mariadb]
+        database-type: [mysql56, mysql57, mysql8]
 
     steps:
       - uses: actions/checkout@v3
