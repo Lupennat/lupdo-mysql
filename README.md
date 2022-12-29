@@ -82,9 +82,6 @@ By default Ludpo-mysql overrides user connection options with this:
 
 Internally lupdo-mysql convert string of type numbers to number or bigint to preserve precision.
 
-> **Note**
-> Custom Aggregate and Function must be adapted as required if using numbers.
-
 ## Kill Connection
 
 Lupdo-mysql support kill query.

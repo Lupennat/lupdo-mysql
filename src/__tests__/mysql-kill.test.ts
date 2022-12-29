@@ -2,10 +2,18 @@ import { Pdo, PdoError } from 'lupdo';
 import { pdoData } from './fixtures/config';
 
 describe('Mysql Kill', () => {
+    const sleep = (timeout: number): Promise<void> => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, timeout);
+        });
+    };
+
     // sometimes sql sleep to simulate long query doesn't work -_-
     jest.retryTimes(6);
 
-    it('Works Destroy Connection Does not kill connection', async () => {
+    it('Works Destroy Connection Kill connection', async () => {
         const events: {
             killed: {
                 [key: string]: number;
@@ -30,7 +38,7 @@ describe('Mysql Kill', () => {
         });
 
         await expect(pdo.exec('SELECT id FROM users WHERE id = 1 OR sleep(10) = 1;')).rejects.toThrow(PdoError);
-
+        await sleep(2000);
         expect(Object.keys(events.killed).length).toBe(1);
-    });
+    }, 10000);
 });

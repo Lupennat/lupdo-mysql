@@ -1,6 +1,6 @@
 {
     "name": "lupdo-mysql",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Mysql Driver For Lupdo",
     "author": "Claudio Pennati <claudio.pennati@gmail.com>",
     "license": "MIT",

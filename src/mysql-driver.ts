@@ -65,6 +65,7 @@ class MysqlDriver extends PdoDriver {
         const newConn = await this.createConnection();
         await newConn.query('KILL QUERY ' + connection.threadId);
         await newConn.end();
+        newConn.removeAllListeners();
         await connection.end();
         connection.removeAllListeners();
     }
