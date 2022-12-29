@@ -12,8 +12,8 @@
 
 ## Supported Databases
 
--   [mysql](https://www.mysql.com/)
--   [mariadb](https://mariadb.org/)
+-   [mysql](https://www.mysql.com/) (v5.6, 5.7, 8)
+-   [mariadb](https://mariadb.org/) (v10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.10, 10.11)
 
 ## Third Party Library
 
