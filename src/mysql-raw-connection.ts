@@ -2,11 +2,11 @@
 import { PdoRawConnection } from 'lupdo';
 import PdoAffectingData from 'lupdo/dist/typings/types/pdo-affecting-data';
 import PdoColumnData from 'lupdo/dist/typings/types/pdo-column-data';
-import PdoColumnValue from 'lupdo/dist/typings/types/pdo-column-value';
-import { Params, ValidBindings } from 'lupdo/dist/typings/types/pdo-prepared-statement';
+import { Params, ValidBindingsSingle } from 'lupdo/dist/typings/types/pdo-prepared-statement';
 import PdoRowData from 'lupdo/dist/typings/types/pdo-raw-data';
 import { FieldPacket, OkPacket, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { MysqlPoolConnection } from './types';
+import { applyPadToRow } from './utils';
 
 const toUnnamed = require('named-placeholders')();
 
@@ -29,19 +29,20 @@ class MysqlRawConnection extends PdoRawConnection {
         // we must use the mysql2 internal library "named-placeholders"
         const statement = await connection.prepare(toUnnamed(sql, [])[0]);
         // we don't really use mysql2 manual statement
-        // because if fails parameters on execute it does not close the connection and all the pool is locked
+        // because if fails parameters on statement.execute it does not close the connection and all the pool is locked
+        // we do not use neither mysql.execute because does not respect typeCast
         // we use prepare only to validate the sql syntax and after that unprepare is called
         await connection.unprepare(statement.statement.query);
         return sql;
     }
 
     protected async executeStatement(
-        statement: string,
+        sql: string,
         bindings: Params,
         connection: MysqlPoolConnection
-    ): Promise<[PdoAffectingData, PdoRowData[], PdoColumnData[]]> {
+    ): Promise<[string, PdoAffectingData, PdoRowData[], PdoColumnData[]]> {
         // statement is the original sql query without "named-placeholders" replacement
-        return this.adaptResponse(...(await connection.execute(statement, bindings)));
+        return [sql, ...this.adaptResponse(...(await connection.query(sql, bindings)))];
     }
 
     protected async closeStatement(): Promise<void> {
@@ -56,7 +57,7 @@ class MysqlRawConnection extends PdoRawConnection {
         connection: MysqlPoolConnection,
         sql: string
     ): Promise<[PdoAffectingData, PdoRowData[], PdoColumnData[]]> {
-        return this.adaptResponse(...(await connection.execute(sql, [])));
+        return this.adaptResponse(...(await connection.query(sql, [])));
     }
 
     protected adaptResponse(
@@ -88,50 +89,25 @@ class MysqlRawConnection extends PdoRawConnection {
                       affectedRows: (info as ResultSetHeader).affectedRows
                   }
                 : {},
-            this.adjustBigInts(info.constructor.name === 'ResultSetHeader' ? [] : (info as RowDataPacket[]), columns),
+            info.constructor.name === 'ResultSetHeader'
+                ? []
+                : (info as RowDataPacket[][]).map(row => {
+                      return applyPadToRow(row, fields);
+                  }),
             columns
         ];
     }
 
-    protected adjustBigInts(rows: RowDataPacket[], columns: any[]): PdoRowData[] {
-        const columnsToAdapt: number[] = [];
-        columns.forEach((column, index) => {
-            if (column.type === 8) {
-                columnsToAdapt.push(index);
-            }
-        });
-
-        return rows.map(row => {
-            const arr: PdoRowData = Object.values(row);
-            for (const index of columnsToAdapt) {
-                const value: PdoColumnValue = arr[index];
-                if (typeof value === 'string') {
-                    const bigI = BigInt(value);
-                    if (bigI > Number.MAX_SAFE_INTEGER || bigI < Number.MIN_SAFE_INTEGER) {
-                        arr[index] = BigInt(value);
-                    } else {
-                        arr[index] = Number(value);
-                    }
-                }
-            }
-            return arr;
-        });
-    }
-
-    protected adaptBindValue(value: ValidBindings): ValidBindings {
+    protected adaptBindValue(value: ValidBindingsSingle): ValidBindingsSingle {
         if (typeof value === 'boolean') {
-            value = Number(value);
+            return Number(value);
         }
 
-        // When running execute(), any placeholder parameter value with the JavaScript type 'number' will now be sent to MySQL via the binary protocol as a MySQL string instead of as a MySQL double.
-        // Prepared statements that are called with parameters having the JavaSCript type 'number' are failing with the error "Incorrect arguments to mysqld_stmt_execute".
-        // It was determined that this was due to a change made to prepared statement handling in MySQL 8.0.22 and that this could be overcome by converting numerical parameter values to strings.
-        // The long-term fix requires the implementation of data type conversion of parameters using the type hints provided by MySQL in the COM_STMT_PREPARE Response.
-        // For more information:
-        // https://dev.mysql.com/worklog/task/?id=9384
-
-        if (typeof value === 'number') {
-            value = value.toString();
+        if (typeof value === 'bigint') {
+            if (value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER) {
+                return value.toString();
+            }
+            return Number(value);
         }
 
         return value;

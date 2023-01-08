@@ -1,6 +1,6 @@
 {
     "name": "lupdo-mysql",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "Mysql Driver For Lupdo",
     "author": "Claudio Pennati <claudio.pennati@gmail.com>",
     "license": "MIT",
@@ -39,10 +39,11 @@
         "build:types": "tsc -p ./typescript/tsconfig.types.json",
         "clean": "rimraf ./dist",
         "local:test": "npm run db:up && npm run test:mysql56 && npm run test:mysql57 && npm run test:mysql8 && npm run test:mariadb1003 && npm run test:mariadb1004 && npm run test:mariadb1005 && npm run test:mariadb1006 && npm run test:mariadb1007 && npm run test:mariadb1008 && npm run test:mariadb1009 && npm run test:mariadb1010 && npm run test:mariadb1011 && npm run db:down",
-        "local:coverage": "npm run db:up && npm run test:mysql8:coverage && npm run db:down",
+        "local:coverage": "docker compose -f docker-compose.yml up --build -d mysql8 && docker-compose -f docker-compose.yml up waitmysql8 && npm run test:mysql8:coverage && npm run db:down",
         "test:mysql56": "npm run lint && cross-env DB=mysql56 jest --config test/jest.config.js",
         "test:mysql57": "npm run lint && cross-env DB=mysql57 jest --config test/jest.config.js",
         "test:mysql8": "npm run lint && cross-env DB=mysql8 jest --config test/jest.config.js",
+        "test:mysql8:coverage": "npm run lint && cross-env DB=mysql8 jest --config test/jest.config.js --coverage",
         "test:mariadb1003": "npm run lint && cross-env DB=mariadb1003 jest --config test/jest.config.js",
         "test:mariadb1004": "npm run lint && cross-env DB=mariadb1004 jest --config test/jest.config.js",
         "test:mariadb1005": "npm run lint && cross-env DB=mariadb1005 jest --config test/jest.config.js",
@@ -79,7 +80,7 @@
         "typescript": "^4.9.4"
     },
     "dependencies": {
-        "lupdo": "^2.0.1",
+        "lupdo": "^2.1.0",
         "mysql2": "^2.3.3",
         "named-placeholders": "^1.1.2",
         "tslib": "^2.4.1"

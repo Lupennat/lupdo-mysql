@@ -104,13 +104,13 @@ describe('Sql Prepared Statement', () => {
 
     it('Works Statement Bind Number', async () => {
         let stmt = await pdo.prepare('SELECT * FROM users limit :limit;');
-        stmt.bindValue('limit', BigInt(3));
+        stmt.bindValue('limit', 3);
         await stmt.execute();
         expect(stmt.fetchArray().all().length).toBe(3);
         await stmt.close();
         stmt = await pdo.prepare('SELECT ?;');
         await stmt.execute([1]);
-        expect(stmt.fetchColumn(0).get()).toBe('1');
+        expect(stmt.fetchColumn(0).get()).toBe(1);
         await stmt.close();
     });
 
@@ -121,7 +121,7 @@ describe('Sql Prepared Statement', () => {
         expect(stmt.fetchArray().all().length).toBe(3);
         await stmt.close();
         stmt = await pdo.prepare('SELECT ?;');
-        await stmt.execute([BigInt(9007199254740994)]);
+        await stmt.execute([BigInt('9007199254740994')]);
         expect(stmt.fetchColumn(0).get()).toBe('9007199254740994');
         await stmt.close();
     });
@@ -136,7 +136,7 @@ describe('Sql Prepared Statement', () => {
         stmt = await pdo.prepare('SELECT ?');
         await stmt.execute([date]);
 
-        expect(new Date(stmt.fetchColumn(0).get() as string)).toEqual(date);
+        expect(stmt.fetchColumn(0).get()).toEqual('2014-01-01 00:00:00.000');
         await stmt.close();
     });
 
@@ -148,7 +148,7 @@ describe('Sql Prepared Statement', () => {
         await stmt.close();
         stmt = await pdo.prepare('SELECT ?;');
         await stmt.execute([true]);
-        expect(stmt.fetchColumn(0).get()).toEqual('1');
+        expect(stmt.fetchColumn(0).get()).toEqual(1);
         await stmt.close();
     });
 

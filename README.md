@@ -70,9 +70,10 @@ By default Ludpo-mysql overrides user connection options with this:
     supportBigNumbers: true,
     bigNumberStrings: true,
     decimalNumbers: false,
-    typeCast: true,
+    typeCast: typeCast,
+    timezone: 'Z',
+    stringifyObjects: true,
     multipleStatements: false,
-    stringifyObjects: false,
     trace: false,
     flags: [],
     queryFormat: undefined,
@@ -80,7 +81,46 @@ By default Ludpo-mysql overrides user connection options with this:
 }
 ```
 
-Internally lupdo-mysql convert string of type numbers to number or bigint to preserve precision.
+Lupdo mysql has a custom type parser
+
+-   `boolean` are returned as number 1 or 0.
+-   `bigint` are returned as number or BigInt when necessary.
+-   `binary` and `blob` are returned as Buffer.
+-   `zerofill` numbers are returned as string.
+-   all `geometry` are returned as json string, coordinates are identified as x,y.
+-   all others types are always returned as string.
+
+## Timezone and Charset
+
+Lupdo mysql force `mysql2` timezone to `Z`, every Javascript `Date` bindings will be converted in String using UTC timezone.\
+Lupdo mysql default `charset` is `UTF8MB4_UNICODE_CI`, you can override through config.\
+You can assign timezone through lupdo create callback in this way.
+
+```ts
+const Pdo = require('lupdo');
+require('lupdo-mysql');
+// ES6 or Typescrypt
+import Pdo from 'lupdo';
+import 'ludpo-mysql';
+
+const pdo = new Pdo(
+    'mysql',
+    {
+        host: 'localhost',
+        port: 3306,
+        user: 'user',
+        password: 'password',
+        database: 'database'
+    },
+    { 
+        min: 2,
+        max: 3,
+        created: async (uuid, connection) => {
+            await connection.query("SET time_zone='Europe/Rome';");
+        }
+    }
+);
+```
 
 ## Kill Connection
 
