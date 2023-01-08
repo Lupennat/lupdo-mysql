@@ -5,6 +5,16 @@ All notable changes to this project from 1.0.0 forward will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2023-01-08
+
+### Fixed
+
+-   Type Casting
+
+### Changed
+
+-   Updated to Lupdo v2.1.0.
+
 ## [1.0.3] - 2022-12-29
 
 ### Fixed

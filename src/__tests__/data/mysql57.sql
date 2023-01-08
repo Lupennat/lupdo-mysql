@@ -18,7 +18,7 @@ INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jeffrey","Androgyne");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Keenan","Two-spirit person");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Lucile","Man");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Kyra","Other");
-INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jearmin","Gender neutral");
+INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jermain","Gender neutral");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Kelli","Agender");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jeffry","Two-spirit person");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Dawn","Male to female");
@@ -69,6 +69,7 @@ CREATE TABLE `test_db`.`types`(
 `longblob` LONGBLOB NULL,
 `enum` ENUM('x-small', 'small', 'medium', 'large', 'x-large') NULL,
 `set` SET('a', 'b', 'c', 'd') NULL,
+`json` JSON NULL,
 `bit` BIT NULL,
 `tinyint` TINYINT NULL,
 `bool` BOOL NULL,

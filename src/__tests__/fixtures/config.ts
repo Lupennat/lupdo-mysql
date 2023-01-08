@@ -12,14 +12,14 @@ export const drivers: {
     },
     mysql57: {
         host: 'localhost',
-        port: 5309,
+        port: 5307,
         user: 'lupdo',
         password: 'lupdo@s3cRet',
         database: 'test_db'
     },
     mysql8: {
         host: 'localhost',
-        port: 5307,
+        port: 5308,
         user: 'lupdo',
         password: 'lupdo@s3cRet',
         database: 'test_db'
@@ -88,6 +88,26 @@ export const drivers: {
         database: 'test_db'
     }
 };
+
+export function isMysqlGreatearThen56(): boolean {
+    return ['mysql57', 'mysql8'].includes(currentDB);
+}
+
+export function isMariaGreaterThen1004(): boolean {
+    return isMariaGreaterThen1006() || ['mariadb1005', 'mariadb1006'].includes(currentDB);
+}
+
+export function isMariaGreaterThen1006(): boolean {
+    return isMariaGreaterThen1009() || ['mariadb1007', 'mariadb1008', 'mariadb1009'].includes(currentDB);
+}
+
+export function isMariaGreaterThen1009(): boolean {
+    return ['mariadb1010', 'mariadb1011'].includes(currentDB);
+}
+
+export function isMysql(): boolean {
+    return ['mysql56', 'mysql57', 'mysql8'].includes(currentDB);
+}
 
 const currentDB: string = process.env.DB as string;
 

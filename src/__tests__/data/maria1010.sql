@@ -18,7 +18,7 @@ INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jeffrey","Androgyne");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Keenan","Two-spirit person");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Lucile","Man");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Kyra","Other");
-INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jearmin","Gender neutral");
+INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jermain","Gender neutral");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Kelli","Agender");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Jeffry","Two-spirit person");
 INSERT INTO `test_db`.`users` (`name`, `gender`) VALUES ("Dawn","Male to female");
@@ -54,36 +54,52 @@ INSERT INTO `test_db`.`companies` (`name`, `opened`, `active`) VALUES ("Greenhol
 INSERT INTO `test_db`.`companies` (`name`, `opened`, `active`) VALUES ("Hauck - Murazik", '2000-12-22 00:00:00', 0);
 INSERT INTO `test_db`.`companies` (`name`, `opened`, `active`) VALUES ("Beier and Sons", '1999-12-22 00:00:00', 0);
 INSERT INTO `test_db`.`companies` (`name`, `opened`, `active`) VALUES ("Harvey Inc", '2022-12-22 00:00:00', 1);
+SET SQL_MODE='ORACLE';
 CREATE TABLE `test_db`.`types`(
 `char` CHAR NULL,
 `varchar` VARCHAR(50) NULL,
 `binary` BINARY(3) NULL,
+`char_byte` CHAR BYTE NULL,
 `varbinary` VARBINARY(20) NULL,
 `tinyblob` TINYBLOB NULL,
 `tinytext` TINYTEXT NULL,
 `text` TEXT NULL,
 `blob` BLOB NULL,
 `mediumtext` MEDIUMTEXT NULL,
+`long` LONG NULL,
+`long_varchar` LONG VARCHAR NULL,
 `mediumblob` MEDIUMBLOB NULL,
 `longtext` LONGTEXT NULL,
 `longblob` LONGBLOB NULL,
 `enum` ENUM('x-small', 'small', 'medium', 'large', 'x-large') NULL,
 `set` SET('a', 'b', 'c', 'd') NULL,
+`json` JSON NULL,
+`inet4` INET4 NULL,
+`inet6` INET6 NULL,
+`uuid` UUID NULL,
 `bit` BIT NULL,
 `tinyint` TINYINT NULL,
+`int1` INT1 NULL,
 `bool` BOOL NULL,
 `boolean` BOOLEAN NULL,
 `smallint` SMALLINT NULL,
+`int2` INT2 NULL,
 `mediumint` MEDIUMINT NULL,
+`int3` INT3 NULL,
 `int` INT NULL,
+`int4` INT4 NULL,
 `integer` INTEGER NULL,
 `bigint` BIGINT NULL,
+`int8` INT8 NULL,
 `decimal` DECIMAL(65,30) NULL,
 `dec` DEC(65,30) NULL,
-`floatp` FLOAT(53) NULL,
+`number` NUMBER(65,30) NULL,
+`numeric` NUMERIC(65,30) NULL,
+`fixed` FIXED(65,30) NULL,
 `float` FLOAT(65,30) NULL,
 `double` DOUBLE(65,30) NULL,
 `double_precision` DOUBLE PRECISION(65,30) NULL,
+`real` REAL(65,30) NULL,
 `tinyint_zero` TINYINT(3) ZEROFILL NULL,
 `smallint_zero` SMALLINT(5) ZEROFILL NULL,
 `mediumint_zero` MEDIUMINT(7) ZEROFILL NULL,
@@ -92,7 +108,6 @@ CREATE TABLE `test_db`.`types`(
 `bigint_zero` BIGINT(20) ZEROFILL NULL,
 `decimal_zero` DECIMAL(65,30) ZEROFILL NULL,
 `dec_zero` DEC(65,30) ZEROFILL NULL,
-`floatp_zero` FLOAT(53) ZEROFILL NULL,
 `float_zero` FLOAT(65,30) ZEROFILL NULL,
 `double_zero` DOUBLE(65,30) ZEROFILL NULL,
 `double_precision_zero` DOUBLE PRECISION(65,30) ZEROFILL NULL,
@@ -110,3 +125,20 @@ CREATE TABLE `test_db`.`types`(
 `multipolygon` MULTIPOLYGON NULL,
 `geometrycollection` GEOMETRYCOLLECTION NULL
 );
+
+-- https://mariadb.com/kb/en/row/
+-- SET sql_mode=DEFAULT;
+-- DROP TABLE IF EXISTS t1;
+-- DROP PROCEDURE IF EXISTS p1;
+-- CREATE TABLE t1 (a INT, b VARCHAR(32));
+-- INSERT INTO t1 VALUES (10,'b10');
+-- DELIMITER $$
+-- CREATE PROCEDURE p1()
+-- BEGIN
+--   DECLARE rec1 ROW(a INT, b VARCHAR(32));
+--   SELECT * FROM t1 INTO rec1;
+--   SELECT rec1.a, rec1.b;
+-- END;
+-- $$
+-- DELIMITER ;
+-- CALL p1();

@@ -5,8 +5,8 @@ import PdoAttributes from 'lupdo/dist/typings/types/pdo-attributes';
 import { PoolOptions } from 'lupdo/dist/typings/types/pdo-pool';
 import MysqlConnection from './mysql-connection';
 import MysqlRawConnection from './mysql-raw-connection';
+import typeCast from './mysql-type-cast';
 import { MysqlOptions, MysqlPoolConnection } from './types';
-
 interface protectedMysqlConnection extends MysqlPoolConnection {
     _fatalError: boolean;
     _protocolError: boolean;
@@ -28,6 +28,9 @@ class MysqlDriver extends PdoDriver {
         const debugMode = this.getAttribute(ATTR_DEBUG) as number;
 
         mysqlOptions.queryFormat = undefined;
+        if (unsecure && !('charset' in mysqlOptions)) {
+            mysqlOptions.charset = 'UTF8MB4_UNICODE_CI';
+        }
 
         return (await mysql2CreateConnection({
             ...mysqlOptions,
@@ -40,9 +43,10 @@ class MysqlDriver extends PdoDriver {
                       supportBigNumbers: true,
                       bigNumberStrings: true,
                       decimalNumbers: false,
-                      typeCast: true,
+                      typeCast: typeCast,
+                      timezone: 'Z',
+                      stringifyObjects: true,
                       multipleStatements: false,
-                      stringifyObjects: false,
                       trace: false,
                       flags: [],
                       queryFormat: undefined,
