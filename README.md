@@ -92,9 +92,13 @@ Lupdo mysql has a custom type parser
 
 ## Timezone and Charset
 
-Lupdo mysql force `mysql2` timezone to `Z`, every Javascript `Date` bindings will be converted in String using UTC timezone.\
+Lupdo mysql force `mysql2` timezone to `Z`, javascript `Date` bindings for timestamp will be converted in String using UTC timezone.\
+
+> **Warning**
+> If you want to store an exact timestamp, you must bind a string or a UTC date like `new Date(Date.UTC(2023, 0, 1, 23, 22, 20, 123))`; using `new Date('2023-01-01 23:22:20.123')` will generate a UTC date based on OS timezone.
+
 Lupdo mysql default `charset` is `UTF8MB4_UNICODE_CI`, you can override through config.\
-You can assign timezone through lupdo create callback in this way.
+You can assign Mysql timezone through lupdo create callback in this way.
 
 ```ts
 const Pdo = require('lupdo');
@@ -112,7 +116,7 @@ const pdo = new Pdo(
         password: 'password',
         database: 'database'
     },
-    { 
+    {
         min: 2,
         max: 3,
         created: async (uuid, connection) => {

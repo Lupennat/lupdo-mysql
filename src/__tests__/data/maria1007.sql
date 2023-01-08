@@ -122,20 +122,3 @@ CREATE TABLE `test_db`.`types`(
 `multipolygon` MULTIPOLYGON NULL,
 `geometrycollection` GEOMETRYCOLLECTION NULL
 );
-
--- https://mariadb.com/kb/en/row/
--- SET sql_mode=DEFAULT;
--- DROP TABLE IF EXISTS t1;
--- DROP PROCEDURE IF EXISTS p1;
--- CREATE TABLE t1 (a INT, b VARCHAR(32));
--- INSERT INTO t1 VALUES (10,'b10');
--- DELIMITER $$
--- CREATE PROCEDURE p1()
--- BEGIN
---   DECLARE rec1 ROW(a INT, b VARCHAR(32));
---   SELECT * FROM t1 INTO rec1;
---   SELECT rec1.a, rec1.b;
--- END;
--- $$
--- DELIMITER ;
--- CALL p1();

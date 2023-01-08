@@ -30,7 +30,11 @@ describe('Mysql BigInt Cast', () => {
 
     if (isMysql()) {
         it('Works All Columns Types', async () => {
-            const pdo = new Pdo(pdoData.driver, pdoData.config);
+            const pdo = new Pdo(pdoData.driver, pdoData.config, {
+                created: async (uuid, connection) => {
+                    await connection.query("SET time_zone='UTC';");
+                }
+            });
             const stmt = await pdo.prepare(
                 'INSERT INTO types (`char`,`varchar`,`binary`,`varbinary`,`tinyblob`,`tinytext`,`text`,`blob`,`mediumtext`,`mediumblob`,`longtext`,`longblob`,`enum`,`set`,`bit`,`tinyint`,`bool`,`boolean`,`smallint`,`mediumint`,`int`,`integer`,`bigint`,`decimal`,`dec`,`float`,`double`,`double_precision`,`tinyint_zero`,`smallint_zero`,`mediumint_zero`,`int_zero`,`integer_zero`,`bigint_zero`,`decimal_zero`,`dec_zero`,`float_zero`,`double_zero`,`double_precision_zero`,`date`,`datetime`,`timestamp`,`time`,`year`,`geometry`,`point`,`linestring`,`polygon`,`multipoint`,`multilinestring`,`multipolygon`,`geometrycollection`,`floatp`,`floatp_zero`' +
                     (isMysqlGreatearThen56() ? ',`json`' : '') +
@@ -144,7 +148,7 @@ describe('Mysql BigInt Cast', () => {
                 '1.6',
                 new Date('2023-01-01'),
                 '2023-01-01 23:22:20.999999',
-                new Date('2023-01-01 23:22:20.123'),
+                new Date(Date.UTC(2023, 0, 1, 23, 22, 20, 123)),
                 '838:59:59',
                 '2023',
                 'POINT(1 1)',
@@ -269,7 +273,7 @@ describe('Mysql BigInt Cast', () => {
             expect(row.double_precision_zero).toBe('0000000000000000000000000000000001.600000000000000000000000000000');
             expect(row.date).toBe(isMariaGreaterThen1009() ? '2023-01-01 00:00:00' : '2023-01-01');
             expect(row.datetime).toBe('2023-01-01 23:22:20.999999');
-            expect(row.timestamp).toBe('2023-01-01 22:22:20.123');
+            expect(row.timestamp).toBe('2023-01-01 23:22:20.123');
             expect(row.time).toBe('838:59:59');
             expect(row.year).toBe('2023');
             expect(row.geometry).toBe('{"x":1,"y":1}');
@@ -296,7 +300,11 @@ describe('Mysql BigInt Cast', () => {
         });
     } else {
         it('Works All Columns Types', async () => {
-            const pdo = new Pdo(pdoData.driver, pdoData.config);
+            const pdo = new Pdo(pdoData.driver, pdoData.config, {
+                created: async (uuid, connection) => {
+                    await connection.query("SET time_zone='UTC';");
+                }
+            });
             const stmt = await pdo.prepare(
                 'INSERT INTO types (`char`,`varchar`,`binary`,`varbinary`,`tinyblob`,`tinytext`,`text`,`blob`,`mediumtext`,`mediumblob`,`longtext`,`longblob`,`enum`,`set`,`bit`,`tinyint`,`bool`,`boolean`,`smallint`,`mediumint`,`int`,`integer`,`bigint`,`decimal`,`dec`,`float`,`double`,`double_precision`,`tinyint_zero`,`smallint_zero`,`mediumint_zero`,`int_zero`,`integer_zero`,`bigint_zero`,`decimal_zero`,`dec_zero`,`float_zero`,`double_zero`,`double_precision_zero`,`date`,`datetime`,`timestamp`,`time`,`year`,`geometry`,`point`,`linestring`,`polygon`,`multipoint`,`multilinestring`,`multipolygon`,`geometrycollection`,`json`,`char_byte`,`long`,`long_varchar`,`int1`,`int2`,`int3`,`int4`,`int8`,`numeric`,`fixed`,`real`' +
                     (isMariaGreaterThen1004() ? ',`inet6`' : '') +
@@ -431,7 +439,7 @@ describe('Mysql BigInt Cast', () => {
                 '1.6',
                 new Date('2023-01-01'),
                 '2023-01-01 23:22:20.999999',
-                new Date('2023-01-01 23:22:20.123'),
+                new Date(Date.UTC(2023, 0, 1, 23, 22, 20, 123)),
                 '838:59:59',
                 '2023',
                 'POINT(1 1)',
@@ -590,7 +598,7 @@ describe('Mysql BigInt Cast', () => {
             expect(row.double_precision_zero).toBe('0000000000000000000000000000000001.600000000000000000000000000000');
             expect(row.date).toBe(isMariaGreaterThen1009() ? '2023-01-01 00:00:00' : '2023-01-01');
             expect(row.datetime).toBe('2023-01-01 23:22:20.999999');
-            expect(row.timestamp).toBe('2023-01-01 22:22:20.123');
+            expect(row.timestamp).toBe('2023-01-01 23:22:20.123');
             expect(row.time).toBe('838:59:59');
             expect(row.year).toBe('2023');
             expect(row.geometry).toBe('{"x":1,"y":1}');
