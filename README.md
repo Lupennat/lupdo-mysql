@@ -81,7 +81,7 @@ By default Ludpo-mysql overrides user connection options with this:
 }
 ```
 
-Lupdo mysql has a custom type parser
+Lupdo-mysql has a custom type parser
 
 -   `boolean` are returned as number 1 or 0.
 -   `bigint` are returned as number or BigInt when necessary.
@@ -90,14 +90,28 @@ Lupdo mysql has a custom type parser
 -   all `geometry` are returned as json string, coordinates are identified as x,y.
 -   all others types are always returned as string.
 
+## Parameters Binding
+
+Lupdo-mysql ignore type definition of `TypeBinding` parameter.\
+Lupdo-mysql does not support array of parameters.
+
+## Mysql Named Parameter
+
+Lupdo-mysql support named parameter with syntax `:name`, through the package [named-placeholders](https://github.com/mysqljs/named-placeholders)
+
+## Mysql Numeric Parameter
+
+Lupdo-mysql support numeric parameter with syntax `?`.
+
 ## Timezone and Charset
 
-Lupdo mysql force `mysql2` timezone to `Z`, javascript `Date` bindings for timestamp will be converted in String using UTC timezone.\
+Lupdo-mysql default `charset` is `UTF8MB4_UNICODE_CI`, you can override through config.
+
+Lupdo-mysql force `mysql2` timezone to `Z`, javascript `Date` bindings for timestamp will be converted in String using UTC timezone.
 
 > **Warning**
 > If you want to store an exact timestamp, you must bind a string or a UTC date like `new Date(Date.UTC(2023, 0, 1, 23, 22, 20, 123))`; using `new Date('2023-01-01 23:22:20.123')` will generate a UTC date based on OS timezone.
 
-Lupdo mysql default `charset` is `UTF8MB4_UNICODE_CI`, you can override through config.\
 You can assign Mysql timezone through lupdo create callback in this way.
 
 ```ts

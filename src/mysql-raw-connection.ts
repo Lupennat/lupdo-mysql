@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { PdoRawConnection } from 'lupdo';
+import { PdoRawConnection, TypedBinding } from 'lupdo';
 import PdoAffectingData from 'lupdo/dist/typings/types/pdo-affecting-data';
 import PdoColumnData from 'lupdo/dist/typings/types/pdo-column-data';
 import { Params, ValidBindingsSingle } from 'lupdo/dist/typings/types/pdo-prepared-statement';
@@ -99,6 +99,10 @@ class MysqlRawConnection extends PdoRawConnection {
     }
 
     protected adaptBindValue(value: ValidBindingsSingle): ValidBindingsSingle {
+        if (value instanceof TypedBinding) {
+            return this.adaptBindValue(value.value);
+        }
+
         if (typeof value === 'boolean') {
             return Number(value);
         }
