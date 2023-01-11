@@ -5,7 +5,7 @@
 	<a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank">
         <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/lupdo-mysql?color=3890aa&label=">
     </a>
-    <a href="https://codecov.io/github/Lupennat/lupdo-mysql" target="__blank">
+    <a href="https://app.codecov.io/github/Lupennat/lupdo-mysql" target="__blank">
         <img src="https://codecov.io/github/Lupennat/lupdo-mysql/branch/main/graph/badge.svg?token=IOOU3AW039"/>
     </a>
     <a href="https://snyk.io/test/github/lupennat/lupdo-mysql" target="__blank">
