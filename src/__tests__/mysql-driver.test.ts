@@ -11,6 +11,7 @@ import {
 } from 'lupdo';
 
 import { Connection, RowDataPacket } from 'mysql2/promise';
+import { createMysqlPdo } from '..';
 import { pdoData } from './fixtures/config';
 const { PromiseConnection } = require('mysql2/promise');
 
@@ -110,6 +111,12 @@ describe('Mysql Driver', () => {
         const pdo = new Pdo(pdoData.driver, pdoData.config, {}, { [ATTR_DEBUG]: DEBUG_ENABLED });
         await pdo.query('SELECT 1');
         expect(console.log).toHaveBeenCalled();
+        await pdo.disconnect();
+    });
+
+    it('Works createMysqlPdo', async () => {
+        const pdo = createMysqlPdo(pdoData.config);
+        expect(pdo).toBeInstanceOf(Pdo);
         await pdo.disconnect();
     });
 });
