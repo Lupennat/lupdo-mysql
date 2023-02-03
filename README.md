@@ -33,7 +33,7 @@ Lupdo-mysql, under the hood, uses stable and performant npm packages:
 Base Example
 
 ```js
-const { createMysqlPdo } = require("lupdo-mysql");
+const { createMysqlPdo } = require('lupdo-mysql');
 // ES6 or Typescrypt
 import { createMysqlPdo } from 'ludpo-mysql';
 
@@ -61,6 +61,9 @@ run();
 ## Driver Options
 
 [https://github.com/mysqljs/mysql#connection-options](https://github.com/mysqljs/mysql#connection-options)
+
+> **Note**
+> The `host` option also accepts a list of `host:port` the pool will generate the connection using a random host from the list.
 
 ## Mysql2 Overrides
 
@@ -119,7 +122,7 @@ Lupdo-mysql force `mysql2` timezone to `Z`, javascript `Date` bindings for times
 You can assign Mysql timezone through lupdo create callback in this way.
 
 ```ts
-const { createMysqlPdo } = require("lupdo-mysql");
+const { createMysqlPdo } = require('lupdo-mysql');
 // ES6 or Typescrypt
 import { createMysqlPdo } from 'ludpo-mysql';
 

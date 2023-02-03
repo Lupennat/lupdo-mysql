@@ -24,8 +24,15 @@ class MysqlDriver extends PdoDriver {
     }
 
     protected async createConnection(unsecure = false): Promise<MysqlPoolConnection> {
+        let { host, port } = this.options;
         const { ...mysqlOptions } = this.options;
         const debugMode = this.getAttribute(ATTR_DEBUG) as number;
+
+        if (Array.isArray(host)) {
+            const exploded = host[Math.floor(Math.random() * host.length)].split(':');
+            port = Number(exploded.pop() as string);
+            host = exploded.join(':');
+        }
 
         mysqlOptions.queryFormat = undefined;
         if (unsecure && !('charset' in mysqlOptions)) {
@@ -34,6 +41,8 @@ class MysqlDriver extends PdoDriver {
 
         return (await mysql2CreateConnection({
             ...mysqlOptions,
+            host: host,
+            port: port,
             ...(unsecure
                 ? {}
                 : {
