@@ -30,6 +30,16 @@ describe('Mysql Driver', () => {
         expect(Pdo.getAvailableDrivers()).toEqual(['mysql', 'mariadb']);
     });
 
+    it('Works Random Host From List', async () => {
+        const config = pdoData.config;
+        config.host = [`${config.host}:${config.port}`, `${config.host}:${config.port}`];
+        config.port = undefined;
+        const pdo = new Pdo(pdoData.driver, config);
+        const stmt = await pdo.query('SELECT 1');
+        expect(stmt.fetchColumn(0).all()).toEqual([1]);
+        await pdo.disconnect();
+    });
+
     it('Works BeginTransaction Return Transaction', async () => {
         const trx = await pdo.beginTransaction();
         expect(trx).toBeInstanceOf(PdoTransaction);

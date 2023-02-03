@@ -1,6 +1,12 @@
 import { Connection, ConnectionOptions, FieldPacket, OkPacket, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 
-export type MysqlOptions = ConnectionOptions;
+export interface MysqlOptions extends Omit<ConnectionOptions, 'host'> {
+    /**
+     * The hostname of the database you are connecting to. (Default: localhost)
+     * It Accept a list of Hosts of type host:port for round robin connection
+     */
+    host?: string | string[];
+}
 
 export interface MysqlPreparedStatementInfo {
     statement: {
