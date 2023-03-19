@@ -75,10 +75,6 @@ describe('Mysql Driver', () => {
         await stmt.close();
     });
 
-    it('Works Prepare Fails', async () => {
-        await expect(pdo.prepare('SELECT ??')).rejects.toThrow(PdoError);
-    });
-
     it('Works Execute Fails', async () => {
         const stmt = await pdo.prepare('SELECT ? as spaccati');
         await expect(stmt.execute([])).rejects.toThrow(PdoError);

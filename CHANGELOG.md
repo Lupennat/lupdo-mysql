@@ -5,6 +5,12 @@ All notable changes to this project from 1.0.0 forward will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2023-03-19
+
+### Changed
+
+-   Mysql statement `prepare` do not real prepare statement on mysql, prepare does not emit error anymore. Error will be raised only on execution.
+
 ## [1.3.0] - 2023-02-03
 
 ### Changed

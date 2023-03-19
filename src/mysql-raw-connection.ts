@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { PdoRawConnection, TypedBinding } from 'lupdo';
 import PdoAffectingData from 'lupdo/dist/typings/types/pdo-affecting-data';
 import PdoColumnData from 'lupdo/dist/typings/types/pdo-column-data';
@@ -7,8 +6,6 @@ import PdoRowData from 'lupdo/dist/typings/types/pdo-raw-data';
 import { FieldPacket, OkPacket, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { MysqlPoolConnection } from './types';
 import { applyPadToRow } from './utils';
-
-const toUnnamed = require('named-placeholders')();
 
 class MysqlRawConnection extends PdoRawConnection {
     protected async doBeginTransaction(connection: MysqlPoolConnection): Promise<void> {
@@ -23,16 +20,10 @@ class MysqlRawConnection extends PdoRawConnection {
         await connection.rollback();
     }
 
-    protected async getStatement(sql: string, connection: MysqlPoolConnection): Promise<string> {
-        // https://github.com/sidorares/node-mysql2/blob/master/documentation/Prepared-Statements.md
-        // manual statement prepare does not support named placeholders
-        // we must use the mysql2 internal library "named-placeholders"
-        const statement = await connection.prepare(toUnnamed(sql, [])[0]);
+    protected async getStatement(sql: string): Promise<string> {
         // we don't really use mysql2 manual statement
         // because if fails parameters on statement.execute it does not close the connection and all the pool is locked
         // we do not use neither mysql.execute because does not respect typeCast
-        // we use prepare only to validate the sql syntax and after that unprepare is called
-        await connection.unprepare(statement.statement.query);
         return sql;
     }
 
@@ -41,7 +32,6 @@ class MysqlRawConnection extends PdoRawConnection {
         bindings: Params,
         connection: MysqlPoolConnection
     ): Promise<[string, PdoAffectingData, PdoRowData[], PdoColumnData[]]> {
-        // statement is the original sql query without "named-placeholders" replacement
         return [sql, ...this.adaptResponse(...(await connection.query(sql, bindings)))];
     }
 
