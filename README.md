@@ -104,7 +104,7 @@ Lupdo-mysql does not support array of parameters.
 
 ## Mysql Named Parameter
 
-Lupdo-mysql support named parameter with syntax `:name`, through the package [named-placeholders](https://github.com/mysqljs/named-placeholders)
+Lupdo-mysql support named parameter with syntax `:name`, the support is guaranteed only if all placeholder have a binding.\
 
 ## Mysql Numeric Parameter
 
