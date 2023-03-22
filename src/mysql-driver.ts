@@ -90,6 +90,11 @@ class MysqlDriver extends PdoDriver {
     public getRawConnection(): PdoRawConnectionI {
         return new MysqlRawConnection(this.pool);
     }
+
+    protected async getVersionFromConnection(connection: MysqlPoolConnection): Promise<string> {
+        const [res] = await connection.query('SELECT VERSION() as version');
+        return (res as string[][])[0][0];
+    }
 }
 
 export default MysqlDriver;
