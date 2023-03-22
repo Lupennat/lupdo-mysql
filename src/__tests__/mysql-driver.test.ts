@@ -94,6 +94,21 @@ describe('Mysql Driver', () => {
         await conn.end();
     });
 
+    it('Work Get Version', async () => {
+        const pdo = createMysqlPdo(pdoData.config);
+        expect((await pdo.getVersion()).length).toBeGreaterThan(1);
+    });
+
+    it('Works Pdo Connection Version', async () => {
+        const pdo = createMysqlPdo(pdoData.config, {
+            created: (uuid, connection) => {
+                expect(connection.version.length).toBeTruthy();
+            }
+        });
+        await pdo.query('SELECT 1');
+        await pdo.disconnect();
+    });
+
     it('Works Connection On Create', async () => {
         const pdo = new Pdo(
             pdoData.driver,

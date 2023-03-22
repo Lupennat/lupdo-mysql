@@ -428,7 +428,7 @@ services:
             - 'until /usr/bin/mysql -hmariadb1010 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
     mariadb1011:
-        image: 'mariadb:10.11-rc'
+        image: 'mariadb:10.11'
         command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
         ports:
             - '31011:3306'
@@ -456,7 +456,7 @@ services:
             - ./src/__tests__/data/maria1010.sql:/data/application/mysql.sql
 
     waitmariadb1011:
-        image: 'mariadb:10.11-rc'
+        image: 'mariadb:10.11'
         links:
             - mariadb1011
         depends_on:
