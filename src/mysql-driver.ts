@@ -93,7 +93,6 @@ class MysqlDriver extends PdoDriver {
 
     protected async getVersionFromConnection(connection: MysqlPoolConnection): Promise<string> {
         const [res] = await connection.query('SELECT VERSION() as version');
-        console.log((res as string[][])[0][0]);
         return (res as string[][])[0][0];
     }
 }
