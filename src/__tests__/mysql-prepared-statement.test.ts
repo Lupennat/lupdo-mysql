@@ -215,4 +215,38 @@ describe('Sql Prepared Statement', () => {
         await stmt.close();
         expect(await pdo.exec('DELETE FROM companies WHERE (`id` = ' + lastId + ');')).toBe(1);
     });
+
+    it('Works Multirow Statement', async () => {
+        await pdo.exec('DROP PROCEDURE IF EXISTS multiset_procedure');
+        await pdo.exec(`CREATE PROCEDURE multiset_procedure()
+        BEGIN
+        
+        SELECT * FROM test_db.companies limit 2;
+        SELECT * FROM test_db.users limit 2;
+        
+        END`);
+
+        const stmt = await pdo.prepare('CALL multiset_procedure()');
+        await stmt.execute();
+
+        let i = 0;
+        do {
+            expect(stmt.fetchArray().all()).toEqual(
+                i === 0
+                    ? [
+                          [1, 'Satterfield Inc', '2022-10-22 00:00:00', 1, null],
+                          [2, 'Grimes - Reinger', '2022-11-22 00:00:00', 0, null]
+                      ]
+                    : [
+                          [1, 'Edmund', 'Multigender'],
+                          [2, 'Kyleigh', 'Cis man']
+                      ]
+            );
+            i++;
+        } while (stmt.nextRowset());
+
+        expect(i).toEqual(2);
+
+        await stmt.close();
+    });
 });
