@@ -16,7 +16,7 @@ function applyPad(value: PdoColumnValue, field?: FieldPacketColumnLength): PdoCo
         field.flags < 128
     ) {
         const columnLength = field.columnLength || 0;
-        const negative = value < 0;
+        const negative = typeof value === 'string' ? value.trim().startsWith('-') : value < 0;
         const str = value.toString().replace('-', '');
 
         if (columnLength > 0) {

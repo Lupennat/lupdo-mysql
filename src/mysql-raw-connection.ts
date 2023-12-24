@@ -31,7 +31,7 @@ class MysqlRawConnection extends PdoRawConnection {
         sql: string,
         bindings: Params,
         connection: MysqlPoolConnection
-    ): Promise<[string, PdoAffectingData, PdoRowData[], PdoColumnData[]]> {
+    ): Promise<[string, PdoAffectingData, PdoRowData[][] | PdoRowData[], PdoColumnData[][] | PdoColumnData[]]> {
         return [sql, ...this.adaptResponse(...(await connection.query(sql, bindings)))];
     }
 
@@ -46,46 +46,77 @@ class MysqlRawConnection extends PdoRawConnection {
     protected async doQuery(
         connection: MysqlPoolConnection,
         sql: string
-    ): Promise<[PdoAffectingData, PdoRowData[], PdoColumnData[]]> {
+    ): Promise<[PdoAffectingData, PdoRowData[][] | PdoRowData[], PdoColumnData[][] | PdoColumnData[]]> {
         return this.adaptResponse(...(await connection.query(sql, [])));
     }
 
     protected adaptResponse(
         info: RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader,
-        fields: FieldPacket[]
-    ): [PdoAffectingData, PdoRowData[], PdoColumnData[]] {
-        const columns = Array.isArray(fields)
-            ? (fields as any[]).map(field => {
-                  return {
-                      catalog: field.catalog,
-                      schema: field.schema,
-                      name: field.name,
-                      orgName: field.orgName,
-                      table: field.table,
-                      orgTable: field.orgTable,
-                      characterSet: field.characterSet,
-                      columnLength: field.columnLength,
-                      columnType: field.columnType,
-                      type: field.columnType,
-                      flags: field.flags,
-                      decimals: field.decimals
-                  };
-              })
-            : [];
+        fields: FieldPacket[][] | FieldPacket[]
+    ): [PdoAffectingData, PdoRowData[][] | PdoRowData[], PdoColumnData[][] | PdoColumnData[]] {
+        const hasColumns = Array.isArray(fields);
+        const isRowSet = hasColumns && Array.isArray(fields[0]);
+        let columns: any[][] | any[] = [];
+
+        if (hasColumns) {
+            if (isRowSet) {
+                columns = (fields as FieldPacket[][])
+                    .filter(rowsetFields => Array.isArray(rowsetFields))
+                    .map(rowsetFields => {
+                        return rowsetFields.map(field => this.adaptColumn(field));
+                    });
+            } else {
+                columns = (fields as FieldPacket[]).map(field => this.adaptColumn(field));
+            }
+        }
+
+        const resultSetHeader: ResultSetHeader | OkPacket | null =
+            info.constructor.name === 'ResultSetHeader'
+                ? (info as ResultSetHeader)
+                : isRowSet && Array.isArray(info) && info[columns.length].constructor.name === 'ResultSetHeader'
+                ? (info[columns.length - 1] as OkPacket)
+                : null;
+
         return [
-            info.constructor.name === 'ResultSetHeader'
-                ? {
-                      lastInsertRowid: (info as ResultSetHeader).insertId,
-                      affectedRows: (info as ResultSetHeader).affectedRows
-                  }
-                : {},
-            info.constructor.name === 'ResultSetHeader'
+            resultSetHeader === null
+                ? {}
+                : {
+                      lastInsertRowid: resultSetHeader.insertId,
+                      affectedRows: resultSetHeader.affectedRows
+                  },
+            resultSetHeader && !isRowSet
                 ? []
+                : isRowSet
+                ? (info as RowDataPacket[][][])
+                      .filter(rowSet => Array.isArray(rowSet))
+                      .map((rowSet, index) => {
+                          return rowSet.map(row => {
+                              return applyPadToRow(row, fields[index] as FieldPacket[]);
+                          });
+                      })
                 : (info as RowDataPacket[][]).map(row => {
-                      return applyPadToRow(row, fields);
+                      return applyPadToRow(row, fields as FieldPacket[]);
                   }),
+
             columns
         ];
+    }
+
+    protected adaptColumn(field: any): any {
+        return {
+            catalog: field.catalog,
+            schema: field.schema,
+            name: field.name,
+            orgName: field.orgName,
+            table: field.table,
+            orgTable: field.orgTable,
+            characterSet: field.characterSet,
+            columnLength: field.columnLength,
+            columnType: field.columnType,
+            type: field.columnType,
+            flags: field.flags,
+            decimals: field.decimals
+        };
     }
 
     protected adaptBindValue(value: ValidBindingsSingle): ValidBindingsSingle {
