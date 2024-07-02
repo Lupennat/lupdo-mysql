@@ -81,7 +81,7 @@
     },
     "dependencies": {
         "lupdo": "^3.4.0",
-        "mysql2": "^2.3.3",
+        "mysql2": "^3.9.8",
         "tslib": "^2.4.1"
     }
 }
