@@ -1,0 +1,37 @@
+services:
+
+  mysql57:
+    ports:
+      - 3306:3306
+
+  mysql80:
+    ports:
+      - 3306:3306
+
+  mysql84:
+    ports:
+      - 3306:3306
+
+  mysql90:
+    ports:
+      - 3306:3306
+
+  mariadb1004:
+    ports:
+      - 3306:3306
+
+  mariadb1005:
+    ports:
+      - 3306:3306
+
+  mariadb1006:
+    ports:
+      - 3306:3306
+
+  mariadb1011:
+    ports:
+      - 3306:3306
+
+  mariadb1104:
+    ports:
+      - 3306:3306
