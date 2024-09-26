@@ -3,35 +3,125 @@ services:
   mysql57:
     ports:
       - 3306:3306
+  waitmysql57:
+    image: 'mysql:5.7'
+    links:
+      - mysql57
+    depends_on:
+      - mysql57
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmysql57 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mysql80:
     ports:
       - 3306:3306
+  waitmysql80:
+    image: 'mysql:8.0'
+    links:
+      - mysql80
+    depends_on:
+      - mysql80
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmysql80 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mysql84:
     ports:
       - 3306:3306
+  waitmysql84:
+    image: 'mysql:8.4'
+    links:
+      - mysql84
+    depends_on:
+      - mysql84
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmysql84 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mysql90:
     ports:
       - 3306:3306
+  waitmysql90:
+    image: 'mysql:9.0'
+    links:
+      - mysql90
+    depends_on:
+      - mysql90
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmysql90 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mariadb1004:
     ports:
       - 3306:3306
+  waitmariadb1004:
+    image: 'mariadb:10.4'
+    links:
+      - mariadb1004
+    depends_on:
+      - mariadb1004
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmariadb1004 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mariadb1005:
     ports:
       - 3306:3306
+  waitmariadb1005:
+    image: 'mariadb:10.5'
+    links:
+      - mariadb1005
+    depends_on:
+      - mariadb1005
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmariadb1005 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mariadb1006:
     ports:
       - 3306:3306
+  waitmariadb1006:
+    image: 'mariadb:10.6'
+    links:
+      - mariadb1006
+    depends_on:
+      - mariadb1006
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmariadb1006 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mariadb1011:
     ports:
       - 3306:3306
+  waitmariadb1011:
+    image: 'mariadb:10.11'
+    links:
+      - mariadb1011
+    depends_on:
+      - mariadb1011
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmariadb1011 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'
 
   mariadb1104:
     ports:
       - 3306:3306
+  waitmariadb1104:
+    image: 'mariadb:11.4'
+    links:
+      - mariadb1104
+    depends_on:
+      - mariadb1104
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mariadb -hmariadb1104 -ulupdo -plupdo@s3cRet -e "SELECT 1"; do sleep 5; done'

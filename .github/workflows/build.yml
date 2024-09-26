@@ -82,6 +82,7 @@ jobs:
         run: |
           docker compose \
             --file ".devcontainer/docker-compose.yml" \
+            --file ".devcontainer/docker-compose-ci.yml" \
             up \
               "wait${{ matrix.database-type }}"
 
