@@ -23,70 +23,21 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          CI: true
 
-      - name: Upload modules as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: node_modules-${{ matrix.node-version }}
-          path: node_modules
-
-  lint:
-    name: Lint Code
-    needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22.x, 20.x, 18.x]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Download modules from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: node_modules-${{ matrix.node-version }}
-          path: node_modules
-
-      - name: Lint
+      - name: Lint code
         run: npm run lint
         env:
           CI: true
 
-  unit:
-    name: Run unit tests
-    needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22.x, 20.x, 18.x]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Download modules from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: node_modules-${{ matrix.node-version }}
-          path: node_modules
-
-      - name: Test
+      - name: Unit test
         run: npm run test:unit
         env:
           CI: true
 
   integration:
     name: Run integration tests with ${{ matrix.database-type }}
-    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -111,11 +62,10 @@ jobs:
         with:
           node-version: 22.x
 
-      - name: Download modules from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: node_modules-22.x
-          path: node_modules
+      - name: Install dependencies
+        run: npm ci
+        env:
+          CI: true
 
       - name: Start Database(s)
         run: |
