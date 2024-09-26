@@ -40,6 +40,7 @@ jobs:
     name: Run integration tests with ${{ matrix.database-type }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         database-type:
           [
@@ -85,9 +86,10 @@ jobs:
 
       - name: Build and test
         run: |
-          npm run test:integration:${{ matrix.database-type }}
+          npm run test:integration
         env:
           CI: true
+          DB: ${{ matrix.database-type }}
 
       - name: Stop Database(s)
         run: |
