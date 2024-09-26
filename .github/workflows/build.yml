@@ -6,98 +6,129 @@ on:
       - main
 
 jobs:
-  mysql:
+  build:
+    name: Run build with ${{ matrix.node-version }}
     runs-on: ubuntu-latest
-
     strategy:
-      fail-fast: false
       matrix:
-        node-version: [18.x, 16.x]
-        database-type: [mysql56, mysql57, mysql8]
-
+        node-version: [22.x, 20.x, 18.x]
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Start Database(s)
-        run: |
-            docker-compose \
-              --file "docker-compose.yml" \
-              up \
-                --detach \
-                --build \
-                "${{ matrix.database-type }}"
-
-      - name: Run npm install
+      - name: Install dependencies
         run: npm ci
 
-      - name: Initialize Database
-        run: |
-            docker-compose \
-              --file "docker-compose.yml" \
-              up \
-                "wait${{ matrix.database-type }}"
+      - name: Upload node_modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
 
-      - name: Build and test
-        run: |
-          npm run build
-          npm run test:db
+      - name: Upload code as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-${{ matrix.node-version }}
+          path: .
+
+  lint:
+    name: Lint Code
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code from artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: code-22.x
+          path: .
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+
+      - name: Lint
+        run: npm run lint
         env:
           CI: true
-          DB: ${{ matrix.database-type }}
 
-      - name: Stop Database(s)
+  unit:
+    name: Run unit tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code from artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: code-22.x
+          path: .
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+
+      - name: Test
+        run: npm run test:unit
+        env:
+          CI: true
+
+  integration:
+    name: Run integration tests with ${{ matrix.database-type }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        database-type:
+          [
+            mysql90,
+            mysql84,
+            mysql8,
+            mysql57,
+            mariadb1104,
+            mariadb1011,
+            mariadb1006,
+            mariadb1005,
+            mariadb1004,
+          ]
+    steps:
+      - name: Download code from artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: code-22.x
+          path: .
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+
+      - name: Start Database(s)
         run: |
           docker-compose \
             --file "docker-compose.yml" \
-            down
-  mariadb:
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [18.x, 16.x]
-        database-type: [mariadb1003, mariadb1004, mariadb1005, mariadb1006, mariadb1007, mariadb1008, mariadb1009, mariadb1010, mariadb1011]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Start Database(s)
-        run: |
-            docker-compose \
-              --file "docker-compose.yml" \
-              up \
-                --detach \
-                --build \
-                "${{ matrix.database-type }}"
-
-      - name: Run npm install
-        run: npm ci
+            up \
+              --detach \
+              --build \
+              "${{ matrix.database-type }}"
 
       - name: Initialize Database
         run: |
-            docker-compose \
-              --file "docker-compose.yml" \
-              up \
-                "wait${{ matrix.database-type }}"
+          docker-compose \
+            --file "docker-compose.yml" \
+            up \
+              "wait${{ matrix.database-type }}"
 
       - name: Build and test
         run: |
-          npm run build
-          npm run test:db
+          npm run test:integration:${{ matrix.database-type }}
         env:
           CI: true
-          DB: ${{ matrix.database-type }}
 
       - name: Stop Database(s)
         run: |
