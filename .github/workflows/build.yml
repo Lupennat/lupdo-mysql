@@ -45,7 +45,7 @@ jobs:
           [
             mysql90,
             mysql84,
-            mysql8,
+            mysql80,
             mysql57,
             mariadb1104,
             mariadb1011,
