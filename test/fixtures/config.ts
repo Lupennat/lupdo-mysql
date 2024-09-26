@@ -1,66 +1,70 @@
 import { MysqlOptions } from '../../src';
 
+const currentDB: string = process.env.DB as string;
+const currentHost: string =
+  (process.env.CI ?? '') != '' ? 'localhost' : currentDB;
+
 export const drivers: {
   [key: string]: MysqlOptions;
 } = {
   mysql57: {
-    host: 'mysql57',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mysql80: {
-    host: 'mysql80',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mysql84: {
-    host: 'mysql84',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mysql90: {
-    host: 'mysql90',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mariadb1004: {
-    host: 'mariadb1004',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mariadb1005: {
-    host: 'mariadb1005',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mariadb1006: {
-    host: 'mariadb1006',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mariadb1011: {
-    host: 'mariadb1011',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
     database: 'test_db',
   },
   mariadb1104: {
-    host: 'mariadb1104',
+    host: currentHost,
     port: 3306,
     user: 'lupdo',
     password: 'lupdo@s3cRet',
@@ -87,8 +91,6 @@ export function isMariaGreaterThen1009(): boolean {
 export function isMysql(): boolean {
   return currentDB.startsWith('mysql');
 }
-
-const currentDB: string = process.env.DB as string;
 
 export const pdoData: { driver: string; config: MysqlOptions } = {
   driver: currentDB.startsWith('maria') ? 'mariadb' : 'mysql',

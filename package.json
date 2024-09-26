@@ -50,7 +50,6 @@
     "prepublish": "not-in-publish || npm run prepublishOnly",
     "test:coverage": "DB=mysql90 jest --passWithNoTests --selectProjects unit integration --coverage --runInBand",
     "test:unit": "jest --passWithNoTests --selectProjects unit --runInBand",
-    "test:integration": "jest --passWithNoTests --selectProjects integration --runInBand",
     "test:integration:mysql57": "DB=mysql57 jest --passWithNoTests --selectProjects integration --runInBand",
     "test:integration:mysql80": "DB=mysql80 jest --passWithNoTests --selectProjects integration --runInBand",
     "test:integration:mysql84": "DB=mysql84 jest --passWithNoTests --selectProjects integration --runInBand",
