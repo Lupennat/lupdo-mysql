@@ -24,33 +24,33 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Upload node_modules cache
-        uses: actions/cache@v3
+      - name: Upload modules as artifact
+        uses: actions/upload-artifact@v4
         with:
+          name: node_modules-${{ matrix.node-version }}
           path: node_modules
-          key: node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Upload code as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: code-${{ matrix.node-version }}
-          path: .
 
   lint:
     name: Lint Code
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x, 20.x, 18.x]
     steps:
-      - name: Download code from artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: code-22.x
-          path: .
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.x
+          node-version: ${{ matrix.node-version }}
+
+      - name: Download modules from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: node_modules-${{ matrix.node-version }}
+          path: node_modules
 
       - name: Lint
         run: npm run lint
@@ -61,17 +61,23 @@ jobs:
     name: Run unit tests
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x, 20.x, 18.x]
     steps:
-      - name: Download code from artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: code-22.x
-          path: .
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.x
+          node-version: ${{ matrix.node-version }}
+
+      - name: Download modules from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: node_modules-${{ matrix.node-version }}
+          path: node_modules
 
       - name: Test
         run: npm run test:unit
@@ -97,16 +103,19 @@ jobs:
             mariadb1004,
           ]
     steps:
-      - name: Download code from artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: code-22.x
-          path: .
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22.x
+
+      - name: Download modules from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: node_modules-22.x
+          path: node_modules
 
       - name: Start Database(s)
         run: |
