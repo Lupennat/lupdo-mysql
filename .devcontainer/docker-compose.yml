@@ -1,0 +1,159 @@
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/typescript-node:18
+    volumes:
+      - ../:/workspaces/lupdo-mysql
+    command: sleep infinity
+
+  mysql57:
+    image: 'mysql:5.7'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/mysql.sql:/data/application/mysql.sql
+
+  mysql80:
+    image: 'mysql:8.0'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/mysql.sql:/data/application/mysql.sql
+
+  mysql84:
+    image: 'mysql:8.4'
+    command: --init-file /data/application/mysql.sql --mysql-native-password=ON --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/mysql.sql:/data/application/mysql.sql
+
+  mysql90:
+    image: 'mysql:9.0'
+    command: --init-file /data/application/mysql.sql --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/mysql.sql:/data/application/mysql.sql
+
+  mariadb1004:
+    image: 'mariadb:10.4'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/maria1004.sql:/data/application/mysql.sql
+
+  mariadb1005:
+    image: 'mariadb:10.5'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/maria1005.sql:/data/application/mysql.sql
+
+  mariadb1006:
+    image: 'mariadb:10.6'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/maria1005.sql:/data/application/mysql.sql
+
+  mariadb1011:
+    image: 'mariadb:10.11'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/maria1010.sql:/data/application/mysql.sql
+
+  mariadb1104:
+    image: 'mariadb:11.4'
+    command: --init-file /data/application/mysql.sql --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    environment:
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lupdo"
+      MYSQL_PASSWORD: "lupdo@s3cRet"
+    healthcheck:
+      test: [ 'CMD', '/usr/bin/mysql', '-hlocalhost', '-ulupdo', '-plupdo@s3cRet', '-e', 'SELECT 1' ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - ./init/maria1010.sql:/data/application/mysql.sql

@@ -1,8 +1,8 @@
 <p align="center">
-	<a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank">
+ <a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank">
         <img src="https://img.shields.io/npm/v/lupdo-mysql?color=0476bc&label=" alt="NPM version">
     </a>
-	<a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank">
+ <a href="https://www.npmjs.com/package/lupdo-mysql" target="__blank">
         <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/lupdo-mysql?color=3890aa&label=">
     </a>
     <a href="https://app.codecov.io/github/Lupennat/lupdo-mysql" target="__blank">
@@ -15,18 +15,19 @@
 
 # Lupdo-mysql
 
-[Lupdo](https://www.npmjs.com/package/lupdo) Driver For Mysql.
+[Lupdo](https://www.npmjs.com/package/lupdo) Driver For Mysql.\
+[Api](https://lupdo-mysql.lupennat.com/api)
 
 ## Supported Databases
 
--   [mysql](https://www.mysql.com/) (v5.6, 5.7, 8)
--   [mariadb](https://mariadb.org/) (v10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.10, 10.11)
+- [mysql](https://www.mysql.com/) (v5.6, 5.7, 8)
+- [mariadb](https://mariadb.org/) (v10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.10, 10.11)
 
 ## Third Party Library
 
 Lupdo-mysql, under the hood, uses stable and performant npm packages:
 
--   [mysql2](https://github.com/sidorares/node-mysql2)
+- [mysql2](https://github.com/sidorares/node-mysql2)
 
 ## Usage
 
@@ -90,12 +91,12 @@ By default Ludpo-mysql overrides user connection options with this:
 
 Lupdo-mysql has a custom type parser
 
--   `boolean` are returned as number 1 or 0.
--   `bigint` are returned as number or BigInt when necessary.
--   `binary` and `blob` are returned as Buffer.
--   `zerofill` numbers are returned as string.
--   all `geometry` are returned as json string, coordinates are identified as x,y.
--   all others types are always returned as string.
+- `boolean` are returned as number 1 or 0.
+- `bigint` are returned as number or BigInt when necessary.
+- `binary` and `blob` are returned as Buffer.
+- `zerofill` numbers are returned as string.
+- all `geometry` are returned as json string, coordinates are identified as x,y.
+- all others types are always returned as string.
 
 ## Parameters Binding
 
