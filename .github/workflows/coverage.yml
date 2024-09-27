@@ -37,11 +37,6 @@ jobs:
             up \
               "waitmysql90"
 
-      - name: Build
-        run: npm run build
-        env:
-          CI: true
-
       - name: Coverage
         run: npm run test:coverage
         env:
