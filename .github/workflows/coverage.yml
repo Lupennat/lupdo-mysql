@@ -18,8 +18,9 @@ jobs:
 
       - name: Start Database(s)
         run: |
-          docker-compose \
-            --file "docker-compose.yml" \
+          docker compose \
+            --file ".devcontainer/docker-compose.yml" \
+            --file ".devcontainer/docker-compose-ci.yml" \
             up \
               --detach \
               --build \
@@ -30,8 +31,9 @@ jobs:
 
       - name: Initialize Database
         run: |
-          docker-compose \
-            --file "docker-compose.yml" \
+          docker compose \
+            --file ".devcontainer/docker-compose.yml" \
+            --file ".devcontainer/docker-compose-ci.yml" \
             up \
               "waitmysql90"
 
@@ -63,6 +65,7 @@ jobs:
 
       - name: Stop Database(s)
         run: |
-          docker-compose \
-            --file "docker-compose.yml" \
+          docker compose \
+            --file ".devcontainer/docker-compose.yml" \
+            --file ".devcontainer/docker-compose-ci.yml" \
             down
