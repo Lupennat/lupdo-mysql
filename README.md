@@ -16,7 +16,7 @@
 # Lupdo-mysql
 
 [Lupdo](https://www.npmjs.com/package/lupdo) Driver For Mysql.\
-[Api](https://lupdo-mysql.lupennat.com/api)
+[Api](https://lupdo-mysql.lupennat.com/api/functions/createMysqlPdo.html)
 
 ## Supported Databases
 
