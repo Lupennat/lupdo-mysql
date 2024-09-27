@@ -88,9 +88,10 @@ jobs:
 
       - name: Build and test
         run: |
-          npm run test:integration:${{ matrix.database-type }}
+          npm run test:integration
         env:
           CI: true
+          DB: ${{ matrix.database-type }}
 
       - name: Stop Database(s)
         run: |

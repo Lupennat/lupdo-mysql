@@ -100,7 +100,7 @@
 				"jest.virtualFolders": [
 					{
 						"name": "coverage",
-						"jestCommandLine": "npm run test:coverage --",
+						"jestCommandLine": "DB=mysql90 npm run test:coverage --",
 						"runMode": {
 							"type": "on-demand",
 							"coverage": true
@@ -113,7 +113,47 @@
 					},
 					{
 						"name": "integration mysql 5.7",
-						"jestCommandLine": "npm run test:integration:mysql57 --",
+						"jestCommandLine": "DB=mysql57 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mysql 8.0",
+						"jestCommandLine": "DB=mysql80 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mysql 8.4",
+						"jestCommandLine": "DB=mysql84 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mysql 9.0",
+						"jestCommandLine": "DB=mysql90 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mariadb 10.04",
+						"jestCommandLine": "DB=mariadb1004 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mariadb 10.05",
+						"jestCommandLine": "DB=mariadb1005 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mariadb 10.06",
+						"jestCommandLine": "DB=mariadb1006 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mariadb 10.11",
+						"jestCommandLine": "DB=mariadb1011 npm run test:integration --",
+						"runMode": "on-demand"
+					},
+					{
+						"name": "integration mariadb 11.04",
+						"jestCommandLine": "DB=mariadb1104 npm run test:integration --",
 						"runMode": "on-demand"
 					},
 				]

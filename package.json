@@ -44,17 +44,9 @@
     "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "prepublishOnly": "safe-publish-latest && npm run build",
     "prepublish": "not-in-publish || npm run prepublishOnly",
-    "test:coverage": "DB=mysql90 jest --passWithNoTests --selectProjects unit integration --coverage --runInBand",
+    "test:coverage": "jest --passWithNoTests --selectProjects unit integration --coverage --runInBand",
     "test:unit": "jest --passWithNoTests --selectProjects unit --runInBand",
-    "test:integration:mysql57": "DB=mysql57 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mysql80": "DB=mysql80 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mysql84": "DB=mysql84 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mysql90": "DB=mysql90 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mariadb1004": "DB=mariadb1004 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mariadb1005": "DB=mariadb1005 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mariadb1006": "DB=mariadb1006 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mariadb1011": "DB=mariadb1011 jest --passWithNoTests --selectProjects integration --runInBand",
-    "test:integration:mariadb1104": "DB=mariadb1104 jest --passWithNoTests --selectProjects integration --runInBand"
+    "test:integration": "jest --passWithNoTests --selectProjects integration --runInBand"
   },
   "engines": {
     "node": ">=18.0.0"
